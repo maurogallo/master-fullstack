@@ -1,4 +1,5 @@
 <?php
+use GuzzleHttp\Middleware;
 
 /*
 |--------------------------------------------------------------------------
@@ -10,6 +11,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//cargando Clases
+
+use App\Http\Middleware\ApiAuthMiddleware;
 
 // RUTAS DE PRUEBA
 Route::get('/', function () {
@@ -53,6 +58,7 @@ Route::get('/test-orm' , 'Pruebascontroller@testOrm');
 
         Route::post('/api/register', 'UserController@register');
         Route::post('/api/login', 'UserController@login');
-        Route::post('/api/user/update', 'UserController@update');
+        Route::put('/api/user/update', 'UserController@update');
+        Route::post('/api/user/upload',  'UserController@upload')->middleware(ApiAuthMiddleware::class);
 
 

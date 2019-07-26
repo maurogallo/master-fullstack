@@ -127,20 +127,96 @@ class UserController extends Controller
         return  response()->json($signup, 200);
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
+
+        // Comprobar si el usuario esta identificado
         $token = $request->header('Authorization');
         $jwtAuth = new \JwtAuth();
         $checkToken = $jwtAuth->checkToken($token);
 
-        if($checkToken){
-            echo "<h1>Login correcto</h1>";
 
-        }else{
-            echo "<h1>Login incorrecto</h1>";
+        // Recoger los datos por post
+
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+
+        if ($checkToken && !empty($params_array)) {
+
+            // Sacar usuario identificado
+
+            $user = $jwtAuth->checkToken($token, true);
+
+            // Validadr datos
+
+            $validate = \Validator::make($params_array, [
+                'name'      => 'required|alpha',
+                'surname'   => 'required|alpha',
+                'email'     => 'required|email|unique:users,' . $user->sub
+            ]);
+
+            // Quitar los campos que no quiuero actualizar
+
+            unset($params_array['id']);
+            unset($params_array['role']);
+            unset($params_array['password']);
+            unset($params_array['created_at']);
+            unset($params_array['remember_token']);
+
+
+
+            // Actualizar usuario  en bbdd
+
+            $user_update = User::where('id', $user->sub)->update($params_array);
+
+            // Devolver array con resultado
+            $data = array(
+                'code' => 200,
+                'status' => 'success',
+                'message' => $user_update,
+                'changes' => $params_array
+
+            );
+        } else {
+            $data = array(
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'El usuario no esta identifiacado.'
+            );
         }
 
-        die();
+
+        return response()->json($json);
+    }
+
+    public function upload(Request $request)
+    {
+
+        // Recoger datos de la peticion
+
+        $image = $request->file('file0');
+
+        // Guardar imagen
+
+        if ($image) {
+            $image_name = time().$image->getClientOriginalName();
+            \Storage::disk('users')->put($image_name, \File::get($image));
+
+            $data = array(
+                'code' => 200,
+                'status' => 'success',
+                'image' => $image_name
+                 );
+        } else {
+
+            $data = array(
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'Error al subir imagen.'
+            );
+        }
 
 
+        return response($data, $data['code'])->header('Content-Type', 'text/plain');
     }
 }
