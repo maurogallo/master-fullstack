@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Post;
 use App\Helpers\JwtAuth;
 
+
 class PostController extends Controller
 {
     public function __construct()
@@ -102,5 +103,56 @@ class PostController extends Controller
 
         // Devolver la respuesta
         return response()->json($data, $data['code']);
+    }
+
+    public function update($id, Request $request){
+        // Recoger los datos por post
+        $json = $request->input('json', null);
+        $params_array = json_decode($json, true);
+
+        // Datos para devolver
+
+        // Devolver algo
+        $data = array (
+            'code' => 400,
+            'status' => 'error',
+            'message' => 'Datos enviados incorrectos '
+        );
+
+        if(!empty($params_array)){
+
+                    // Validar los datos
+
+                    $validate = \Validator::make($params_array, [
+                        'title' => 'required',
+                        'content' => 'required',
+                        'category_id' => 'required'
+                    ]);
+
+                    if($validate->fails()){
+                        $data['errora'] = $$validate->errors();
+                        return response()->json($data, $data['code']);
+                    }
+
+                    // Eliminar lo que no queremos actualizar
+                    unset($params_array['id']);
+                    unset($params_array['user_id']);
+                    unset($params_array['created_at']);
+                    unset($params_array['user']);
+
+                    // Actualizar el registro en concreto
+
+                    $post = Post::where('id', $id)->update($params_array);
+
+                    // Devolver algo
+
+                    $data = array (
+                        'code' => 200,
+                        'status' => 'success',
+                        'post' => $params_array
+                    );
+                }
+
+         return response()->json($data, $data['code']);
     }
 }
