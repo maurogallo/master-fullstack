@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\User;
 
-use function GuzzleHttp\json_decode;
-
 class UserController extends Controller
 {
     public function pruebas(Request $request)
