@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Category;
-use function GuzzleHttp\json_decode;
+
 
 class CategoryController extends Controller
 {
