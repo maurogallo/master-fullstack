@@ -12,7 +12,7 @@ class PostController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('api.auth', ['except' => ['index', 'show', 'getImage']]);
+        $this->middleware('api.auth', ['except' => ['index', 'show', 'getImage','getPostsByCategory','getPostsByUser']]);
     }
 
     public function index()
@@ -237,7 +237,7 @@ class PostController extends Controller
                 'message' => 'Error al subir la imagen'
             ];
         } else {
-            $image_name = time().$image->getClientOriginalName();
+            $image_name = time() . $image->getClientOriginalName();
 
             \Storage::disk('images')->put($image_name, \File::get($image));
 
@@ -253,20 +253,20 @@ class PostController extends Controller
         return response()->json($data, $data['code']);
     }
 
-    public function getImage($filename){
+    public function getImage($filename)
+    {
         // Comprobar si existe el fichero
 
         $isset = \Storage::disk('images')->exists($filename);
 
-        if($isset){
+        if ($isset) {
 
-        // Conseguir la imagen
-        $file = \Storage::disk('images')->get($filename);
+            // Conseguir la imagen
+            $file = \Storage::disk('images')->get($filename);
 
-        // Devolver la imagen
-        return new Response($file,  200);
-
-        }else{
+            // Devolver la imagen
+            return new Response($file,  200);
+        } else {
             $data = [
                 'code' => 404,
                 'status' => 'error',
@@ -277,8 +277,23 @@ class PostController extends Controller
 
         return response()->json($data, $data['code']);
 
-        // Mostrar error
+    }
 
+    public function getPostsByCategory($id){
+        $posts = Post::where('category_id', $id)->get();
 
+        return response()->json([
+            'status' => 'success',
+            'posts' => $posts
+        ], 200);
+    }
+
+    public function getPostsByUser($id){
+        $posts = Post::where('user_id', $id)->get();
+
+        return response()->json([
+            'status' => 'success',
+            'posts' => $posts
+        ], 200);
     }
 }
