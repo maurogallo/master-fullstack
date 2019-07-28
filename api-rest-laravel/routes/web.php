@@ -1,4 +1,5 @@
 <?php
+
 use GuzzleHttp\Middleware;
 
 /*
@@ -21,22 +22,22 @@ Route::get('/', function () {
     return '<h1>hola mundo con laravel </h1>';
 });
 
-Route::get('/welcome', function(){
+Route::get('/welcome', function () {
     return view('welcome');
 });
 
-Route::get('/pruebas/{nombre?}', function($nombre = null){
+Route::get('/pruebas/{nombre?}', function ($nombre = null) {
 
     $texto = '<h2>Texto desde una ruta</h2>';
-    $texto .= 'nombre: '.$nombre;
+    $texto .= 'nombre: ' . $nombre;
 
-    return view('pruebas',array(
+    return view('pruebas', array(
         'texto' => $texto
     ));
 });
 
-Route::get('/animales' , 'Pruebascontroller@index');
-Route::get('/test-orm' , 'Pruebascontroller@testOrm');
+Route::get('/animales', 'Pruebascontroller@index');
+Route::get('/test-orm', 'Pruebascontroller@testOrm');
 
 // RUTAS DE API
 
@@ -49,27 +50,25 @@ Route::get('/test-orm' , 'Pruebascontroller@testOrm');
 */
 
 //rutas de  pruebas
-        //Route::get('/usuario/pruebas', 'UserController@pruebas');
-        //Route::get('/categoria/pruebas', 'CategoryController@pruebas');
-        //Route::get('/entrada/pruebas', 'PostController@pruebas');
+//Route::get('/usuario/pruebas', 'UserController@pruebas');
+//Route::get('/categoria/pruebas', 'CategoryController@pruebas');
+//Route::get('/entrada/pruebas', 'PostController@pruebas');
 
 
-        // Rutas de controlados de usuario
+// Rutas de controlados de usuario
 
-        Route::post('/api/register', 'UserController@register');
-        Route::post('/api/login', 'UserController@login');
-        Route::put('/api/user/update', 'UserController@update');
-        Route::post('/api/user/upload',  'UserController@upload')->middleware(ApiAuthMiddleware::class);
-        Route::get('/api/user/avatar/{filename}', 'UserController@getImage');
-        Route::get('/api/user/detail/{id}', 'UserController@detail');
-
-
-        // Rutas del controlador de categorias
-
-        Route::resource('/api/category', 'CategoryController');
-
-        // Rutas del controlador de entradas
-
-        Route::resource('/api/post', 'PostController');
+Route::post('/api/register', 'UserController@register');
+Route::post('/api/login', 'UserController@login');
+Route::put('/api/user/update', 'UserController@update');
+Route::post('/api/user/upload',  'UserController@upload')->middleware(ApiAuthMiddleware::class);
+Route::get('/api/user/avatar/{filename}', 'UserController@getImage');
+Route::get('/api/user/detail/{id}', 'UserController@detail');
 
 
+// Rutas del controlador de categorias
+
+Route::resource('/api/category', 'CategoryController');
+
+// Rutas del controlador de entradas
+
+Route::resource('/api/post', 'PostController');
