@@ -142,14 +142,15 @@ class PostController extends Controller
 
                     // Actualizar el registro en concreto
 
-                    $post = Post::where('id', $id)->update($params_array);
+                    $post = Post::where('id', $id)->updateOrCreate($params_array);
 
                     // Devolver algo
 
                     $data = array (
                         'code' => 200,
                         'status' => 'success',
-                        'post' => $params_array
+                        'post' => $post,
+                        'changes' => $params_array
                     );
                 }
 
