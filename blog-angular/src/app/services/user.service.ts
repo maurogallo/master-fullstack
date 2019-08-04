@@ -27,4 +27,6 @@ public url: string;
     return this._http.post(this.url+'register',params, {headers: headers});
 
   }
+
+
 }
